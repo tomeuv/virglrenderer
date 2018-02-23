@@ -62,7 +62,7 @@
 int vrend_dump_shaders;
 
 /* debugging via KHR_debug extension */
-int vrend_use_debug_cb = 0;
+int vrend_use_debug_cb = 1;
 
 struct vrend_if_cbs *vrend_clicbs;
 
