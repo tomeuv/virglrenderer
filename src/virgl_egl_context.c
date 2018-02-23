@@ -127,7 +127,7 @@ struct virgl_egl *virgl_egl_init(void)
 {
    static const EGLint conf_att[] = {
       EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-      EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
+      EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
       EGL_RED_SIZE, 1,
       EGL_GREEN_SIZE, 1,
       EGL_BLUE_SIZE, 1,
@@ -208,7 +208,7 @@ struct virgl_egl *virgl_egl_init(void)
       goto fail;
    }
 
-   api = EGL_OPENGL_API;
+   api = EGL_OPENGL_ES_API;
    b = eglBindAPI(api);
    if (!b)
       goto fail;
