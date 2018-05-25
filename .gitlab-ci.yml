@@ -1,0 +1,50 @@
+image: tomeuv/virgl-ci:latest
+
+cache:
+  paths:
+    - ccache/
+    - install-prefix/
+
+before_script:
+   - export ROOT_DIR=${PWD}
+
+   - export PATH="/usr/lib/ccache:$PATH"
+   - mkdir -p ccache
+   - export CCACHE_BASEDIR=$ROOT_DIR
+   - export CCACHE_DIR=$ROOT_DIR/ccache
+
+   - ccache -s
+
+   - export LD_LIBRARY_PATH=$ROOT_DIR/install-prefix/lib64:$ROOT_DIR/install-prefix/lib
+   - export PKG_CONFIG_PATH=$ROOT_DIR/install-prefix/lib/pkgconfig:$ROOT_DIR/install-prefix/lib64/pkgconfig:$ROOT_DIR/install-prefix/share/pkgconfig
+   - export LDFLAGS="-L$ROOT_DIR/install-prefix/lib64 -L$ROOT_DIR/install-prefix/lib64"
+
+stages:
+   - build_virglrenderer
+   - build_qemu
+   - test
+
+build_virglrenderer:
+  stage: build_virglrenderer
+  script:
+   - ./autogen.sh --prefix=$ROOT_DIR/install-prefix
+   - make -j$(nproc) install
+
+build_qemu:
+  stage: build_qemu
+  script:
+   - git clone --depth 1 https://gitlab.collabora.com/tomeu/qemu.git
+   - cd qemu
+   - ./configure --prefix=$ROOT_DIR/install-prefix --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror
+   - make -j$(nproc) install
+   - cd ..
+
+test:
+  stage: test
+  script:
+  - export XDG_RUNTIME_DIR=/tmp
+  - export WAYLAND_DISPLAY=wayland-0
+  - nohup weston --backend=headless-backend.so &
+  - sleep 2
+  - fakemachine date
+
