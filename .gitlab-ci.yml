@@ -22,9 +22,29 @@ before_script:
    - export LDFLAGS="-L$ROOT_DIR/install-prefix/lib64 -L$ROOT_DIR/install-prefix/lib64"
 
 stages:
+   - build_libepoxy
+   - build_mesa
    - build_virglrenderer
    - build_qemu
    - test
+
+build_libepoxy:
+  stage: build_libepoxy
+  script:
+   - git clone --depth 1 https://github.com/anholt/libepoxy.git
+   - cd libepoxy
+   - ./autogen.sh --prefix=$ROOT_DIR/install-prefix
+   - make -j$(nproc) install
+   - cd ..
+
+build_mesa:
+  stage: build_mesa
+  script:
+   - git clone --depth 1 git://anongit.freedesktop.org/mesa/mesa
+   - cd mesa
+   - ./autogen.sh --prefix=$ROOT_DIR/install-prefix --enable-gles2 --with-platforms="drm x11 wayland" --with-dri-drivers= --with-gallium-drivers="swrast virgl" --enable-debug --disable-glx --disable-omx-tizonia
+   - make -j$(nproc) install
+   - cd ..
 
 build_virglrenderer:
   stage: build_virglrenderer
