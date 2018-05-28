@@ -66,5 +66,5 @@ test:
   - nohup weston --backend=headless-backend.so &
   - sleep 2
   - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
-  - fakemachine date
+  - fakemachine weston-launch
 
