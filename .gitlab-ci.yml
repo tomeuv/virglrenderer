@@ -4,11 +4,6 @@ cache:
   paths:
     - ccache/
 
-cache:
-  key: "$CI_PIPELINE_ID"
-  paths:
-    - install-prefix/
-
 before_script:
    - export ROOT_DIR=${PWD}
 
@@ -31,6 +26,10 @@ stages:
 
 build:
   stage: build
+  artifacts:
+    paths:
+    - install-prefix/
+    expire_in: 1 day
   script:
    - git clone --depth 1 https://github.com/anholt/libepoxy.git
    - cd libepoxy
@@ -64,11 +63,13 @@ build:
 
 test:
   stage: test
+  dependencies: 
+  - build
   script:
   - export XDG_RUNTIME_DIR=/tmp
   - export WAYLAND_DISPLAY=wayland-0
   - nohup weston --backend=headless-backend.so &
   - sleep 2
   - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
-  - fakemachine weston-launch
+  - fakemachine -v $ROOT_DIR/install-prefix:$ROOT_DIR/install-prefix weston-launch
 
