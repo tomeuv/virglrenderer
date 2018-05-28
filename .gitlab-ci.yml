@@ -22,47 +22,33 @@ before_script:
    - export LDFLAGS="-L$ROOT_DIR/install-prefix/lib64 -L$ROOT_DIR/install-prefix/lib64"
 
 stages:
-   - build_libepoxy
-   - build_mesa
-   - build_virglrenderer
-   - build_qemu
-   - build_deqp
+   - build
    - test
 
-build_libepoxy:
-  stage: build_libepoxy
+build:
+  stage: build
   script:
    - git clone --depth 1 https://github.com/anholt/libepoxy.git
    - cd libepoxy
    - ./autogen.sh --prefix=$ROOT_DIR/install-prefix
    - make -j$(nproc) install
+   - cd ..
 
-build_mesa:
-  stage: build_mesa
-  script:
    - git clone --depth 1 git://anongit.freedesktop.org/mesa/mesa
    - cd mesa
    - ./autogen.sh --prefix=$ROOT_DIR/install-prefix --enable-gles2 --with-platforms="drm x11 wayland" --with-dri-drivers= --with-gallium-drivers="swrast virgl" --enable-debug --disable-glx --disable-omx-tizonia
    - make -j$(nproc) install
+   - cd ..
 
-build_virglrenderer:
-  stage: build_virglrenderer
-  script:
    - ./autogen.sh --prefix=$ROOT_DIR/install-prefix
    - make -j$(nproc) install
 
-build_qemu:
-  stage: build_qemu
-  script:
    - git clone --depth 1 https://gitlab.collabora.com/tomeu/qemu.git
    - cd qemu
    - ./configure --prefix=$ROOT_DIR/install-prefix --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror
    - make -j$(nproc) install
+   - cd ..
 
-build_deqp:
-  stage: build_deqp
-  script:
-   - apt-get -y install cmake
    - git clone --depth 1 https://github.com/KhronosGroup/VK-GL-CTS.git
    - cd VK-GL-CTS
    - mkdir build
@@ -70,6 +56,7 @@ build_deqp:
    - cmake .. -DDEQP_TARGET=wayland -DGLCTS_GTF_TARGET=gles2
    - make -j$(nproc)
    - cp -rf ../../VK-GL-CTS $ROOT_DIR/install-prefix/.
+   - cd ..
 
 test:
   stage: test
