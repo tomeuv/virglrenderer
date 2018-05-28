@@ -3,7 +3,9 @@ image: tomeuv/virgl-ci:latest
 cache:
   paths:
     - ccache/
-    - install-prefix/
+
+stages:
+  - build_and_test
 
 before_script:
    - export ROOT_DIR=${PWD}
@@ -21,12 +23,8 @@ before_script:
    - export PKG_CONFIG_PATH=$ROOT_DIR/install-prefix/lib/pkgconfig:$ROOT_DIR/install-prefix/lib64/pkgconfig:$ROOT_DIR/install-prefix/share/pkgconfig
    - export LDFLAGS="-L$ROOT_DIR/install-prefix/lib64 -L$ROOT_DIR/install-prefix/lib64"
 
-stages:
-   - build
-   - test
-
-build:
-  stage: build
+build_and_test:
+  stage: build_and_test
   script:
    - git clone --depth 1 https://github.com/anholt/libepoxy.git
    - cd libepoxy
@@ -58,17 +56,10 @@ build:
    - cp -rf ../../VK-GL-CTS $ROOT_DIR/install-prefix/.
    - cd ..
 
-test:
-  stage: test
-  script:
-  - export XDG_RUNTIME_DIR=/tmp
-  - export WAYLAND_DISPLAY=wayland-0
-  - nohup weston --backend=headless-backend.so &
-  - sleep 2
-  - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
-  - fakemachine -v $ROOT_DIR:$ROOT_DIR
-      systemctl start weston
-      sleep 3
-      systemctl status weston
-      WAYLAND_DISPLAY=wayland-0 $ROOT_DIR/install-prefix/VK-GL-CTS/build/external/openglcts/modules/glcts --deqp-case=dEQP-GLES3.*
+   - export XDG_RUNTIME_DIR=/tmp
+   - export WAYLAND_DISPLAY=wayland-0
+   - nohup weston --backend=headless-backend.so &
+   - sleep 2
+   - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
+   - fakemachine -v $ROOT_DIR:$ROOT_DIR sh $ROOT_DIR/run-deqp.sh
 
