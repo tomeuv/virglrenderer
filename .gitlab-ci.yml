@@ -3,6 +3,10 @@ image: tomeuv/virgl-ci:latest
 cache:
   paths:
     - ccache/
+
+cache:
+  key: "$CI_PIPELINE_ID"
+  paths:
     - install-prefix/
 
 before_script:
