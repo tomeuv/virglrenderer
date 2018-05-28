@@ -41,7 +41,7 @@ build_and_test:
    - ./autogen.sh --prefix=$ROOT_DIR/install-prefix
    - make -j$(nproc) install
 
-   - git clone --depth 1 https://gitlab.collabora.com/tomeu/qemu.git
+   - git clone --depth 1 git://git.qemu.org/qemu.git
    - cd qemu
    - ./configure --prefix=$ROOT_DIR/install-prefix --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror
    - make -j$(nproc) install
