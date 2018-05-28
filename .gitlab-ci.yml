@@ -39,7 +39,6 @@ build_qemu:
    - cd qemu
    - ./configure --prefix=$ROOT_DIR/install-prefix --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror
    - make -j$(nproc) install
-   - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
    - cd ..
 
 test:
@@ -49,6 +48,8 @@ test:
   - export WAYLAND_DISPLAY=wayland-0
   - nohup weston --backend=headless-backend.so &
   - sleep 2
+   - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
   - fakemachine --help
-  - fakemachine date
+  - apt-get -y install strace
+  - strace -ff fakemachine date
 
