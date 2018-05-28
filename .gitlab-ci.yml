@@ -48,8 +48,6 @@ test:
   - export WAYLAND_DISPLAY=wayland-0
   - nohup weston --backend=headless-backend.so &
   - sleep 2
-   - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
-  - fakemachine --help
-  - apt-get -y install strace
-  - strace -ff fakemachine date
+  - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
+  - fakemachine date
 
