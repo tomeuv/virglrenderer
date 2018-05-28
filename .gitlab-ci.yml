@@ -8,6 +8,8 @@ cache:
 before_script:
    - export ROOT_DIR=${PWD}
 
+   - export GOPATH=/usr/local/go
+   - export PATH=$PATH:$GOPATH/bin
    - export PATH="/usr/lib/ccache:$PATH"
    - mkdir -p ccache
    - export CCACHE_BASEDIR=$ROOT_DIR
@@ -20,8 +22,8 @@ before_script:
    - export LDFLAGS="-L$ROOT_DIR/install-prefix/lib64 -L$ROOT_DIR/install-prefix/lib64"
 
 stages:
-   - build_virglrenderer
-   - build_qemu
+#   - build_virglrenderer
+#   - build_qemu
    - test
 
 build_virglrenderer:
@@ -46,5 +48,5 @@ test:
   - export WAYLAND_DISPLAY=wayland-0
   - nohup weston --backend=headless-backend.so &
   - sleep 2
-  - fakemachine date
+  - fakemachine --help
 
