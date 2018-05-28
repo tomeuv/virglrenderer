@@ -66,5 +66,9 @@ test:
   - nohup weston --backend=headless-backend.so &
   - sleep 2
   - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
-  - fakemachine -v $ROOT_DIR/install-prefix:$ROOT_DIR/install-prefix systemctl start weston
+  - fakemachine -v $ROOT_DIR:$ROOT_DIR
+      systemctl start weston
+      sleep 3
+      systemctl status weston
+      WAYLAND_DISPLAY=wayland-0 $ROOT_DIR/install-prefix/VK-GL-CTS/build/external/openglcts/modules/glcts --deqp-case=dEQP-GLES3.*
 
