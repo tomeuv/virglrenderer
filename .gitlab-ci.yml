@@ -21,6 +21,27 @@ before_script:
    - export PKG_CONFIG_PATH=$ROOT_DIR/install-prefix/lib/pkgconfig:$ROOT_DIR/install-prefix/lib64/pkgconfig:$ROOT_DIR/install-prefix/share/pkgconfig
    - export LDFLAGS="-L$ROOT_DIR/install-prefix/lib64 -L$ROOT_DIR/install-prefix/lib64"
 
+stages:
+   - build_virglrenderer
+   - build_qemu
+   - test
+
+build_virglrenderer:
+  stage: build_virglrenderer
+  script:
+   - ./autogen.sh --prefix=$ROOT_DIR/install-prefix
+   - make -j$(nproc) install
+
+build_qemu:
+  stage: build_qemu
+  script:
+   - git clone --depth 1 https://gitlab.collabora.com/tomeu/qemu.git
+   - cd qemu
+   - ./configure --prefix=$ROOT_DIR/install-prefix --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror
+   - make -j$(nproc) install
+   - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
+   - cd ..
+
 test:
   stage: test
   script:
@@ -29,4 +50,5 @@ test:
   - nohup weston --backend=headless-backend.so &
   - sleep 2
   - fakemachine --help
+  - fakemachine date
 
