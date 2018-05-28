@@ -26,6 +26,7 @@ stages:
    - build_mesa
    - build_virglrenderer
    - build_qemu
+   - build_deqp
    - test
 
 build_libepoxy:
@@ -35,7 +36,6 @@ build_libepoxy:
    - cd libepoxy
    - ./autogen.sh --prefix=$ROOT_DIR/install-prefix
    - make -j$(nproc) install
-   - cd ..
 
 build_mesa:
   stage: build_mesa
@@ -44,7 +44,6 @@ build_mesa:
    - cd mesa
    - ./autogen.sh --prefix=$ROOT_DIR/install-prefix --enable-gles2 --with-platforms="drm x11 wayland" --with-dri-drivers= --with-gallium-drivers="swrast virgl" --enable-debug --disable-glx --disable-omx-tizonia
    - make -j$(nproc) install
-   - cd ..
 
 build_virglrenderer:
   stage: build_virglrenderer
@@ -59,7 +58,18 @@ build_qemu:
    - cd qemu
    - ./configure --prefix=$ROOT_DIR/install-prefix --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror
    - make -j$(nproc) install
-   - cd ..
+
+build_deqp:
+  stage: build_deqp
+  script:
+   - apt-get -y install cmake
+   - git clone --depth 1 https://github.com/KhronosGroup/VK-GL-CTS.git
+   - cd VK-GL-CTS
+   - mkdir build
+   - cd build
+   - cmake .. -DDEQP_TARGET=wayland -DGLCTS_GTF_TARGET=gles2
+   - make -j$(nproc)
+   - cp -rf ../../VK-GL-CTS $ROOT_DIR/install-prefix/.
 
 test:
   stage: test
