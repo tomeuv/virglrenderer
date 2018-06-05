@@ -44,6 +44,7 @@ build_and_test:
    - git clone --depth 1 git://git.qemu.org/qemu.git
    - cd qemu
    - ./configure --prefix=$ROOT_DIR/install-prefix --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror
+   - cat config-host.mak
    - make -j$(nproc) install
    - cd ..
 
@@ -61,5 +62,6 @@ build_and_test:
    - nohup weston --backend=headless-backend.so &
    - sleep 2
    - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
+   - /usr/bin/qemu-system-x86_64 -version
    - fakemachine -v $ROOT_DIR:$ROOT_DIR sh $ROOT_DIR/run-deqp.sh
 
