@@ -55,7 +55,7 @@ build_and_test:
    - cd VK-GL-CTS
    - mkdir build
    - cd build
-   - cmake .. -DDEQP_TARGET=wayland -DGLCTS_GTF_TARGET=gles2
+   - cmake .. -DDEQP_TARGET=wayland
    - make -j$(nproc)
    - cp -rf ../../VK-GL-CTS $ROOT_DIR/install-prefix/.
    - cd ..
