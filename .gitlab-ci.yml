@@ -26,17 +26,17 @@ before_script:
 build_and_test:
   stage: build_and_test
   script:
-   - git clone --depth 1 https://github.com/anholt/libepoxy.git
-   - cd libepoxy
-   - git log --oneline -n 1
-   - ./autogen.sh --prefix=$ROOT_DIR/install-prefix
-   - make -j$(nproc) install
-   - cd ..
-
    - git clone --depth 1 git://anongit.freedesktop.org/mesa/mesa
    - cd mesa
    - git log --oneline -n 1
    - ./autogen.sh --prefix=$ROOT_DIR/install-prefix --enable-gles2 --with-platforms="drm x11 wayland" --with-dri-drivers= --with-gallium-drivers="swrast virgl" --enable-debug --disable-glx --disable-omx-tizonia
+   - make -j$(nproc) install
+   - cd ..
+
+   - git clone --depth 1 https://github.com/anholt/libepoxy.git
+   - cd libepoxy
+   - git log --oneline -n 1
+   - ./autogen.sh --prefix=$ROOT_DIR/install-prefix
    - make -j$(nproc) install
    - cd ..
 
@@ -49,6 +49,15 @@ build_and_test:
    - ./configure --prefix=$ROOT_DIR/install-prefix --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror
    - cat config-host.mak
    - make -j$(nproc) install
+   - cd ..
+
+   - git clone --depth 1 https://github.com/KhronosGroup/VK-GL-CTS.git
+   - cd VK-GL-CTS
+   - mkdir build
+   - cd build
+   - cmake .. -DDEQP_TARGET=wayland -DGLCTS_GTF_TARGET=gles2
+   - make -j$(nproc)
+   - cp -rf ../../VK-GL-CTS $ROOT_DIR/install-prefix/.
    - cd ..
 
    - export XDG_RUNTIME_DIR=/tmp
