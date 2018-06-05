@@ -66,5 +66,5 @@ build_and_test:
    - sleep 2
    - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
    - /usr/bin/qemu-system-x86_64 -version
-   - fakemachine -v $ROOT_DIR:$ROOT_DIR sh $ROOT_DIR/run-deqp.sh
+   - fakemachine -v $ROOT_DIR:$ROOT_DIR sh $ROOT_DIR/run-deqp.sh || true
 
