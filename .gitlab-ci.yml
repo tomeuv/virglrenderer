@@ -67,5 +67,5 @@ build_and_test:
    - nohup weston --backend=headless-backend.so &
    - sleep 2
    - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
-   - WAYLAND_DEBUG=client fakemachine -v $ROOT_DIR:$ROOT_DIR sh $ROOT_DIR/run-deqp.sh || true
+   - WAYLAND_DEBUG=client strace fakemachine -v $ROOT_DIR:$ROOT_DIR sh $ROOT_DIR/run-deqp.sh || true
 
