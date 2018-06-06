@@ -33,7 +33,7 @@ build_and_test:
    - git clone --depth 1 git://anongit.freedesktop.org/mesa/mesa
    - cd mesa
    - git log --oneline -n 1
-   - ./autogen.sh --prefix=$ROOT_DIR/install-prefix --with-platforms="drm x11 wayland" --with-dri-drivers= --with-gallium-drivers="swrast virgl" --enable-debug --disable-glx --enable-llvm
+   - ./autogen.sh --prefix=$ROOT_DIR/install-prefix --with-platforms="drm x11 wayland" --with-dri-drivers= --with-gallium-drivers="swrast virgl" --enable-debug --disable-glx --enable-llvm --enable-shared-glapi
    - make -j$(nproc) install
    - cd ..
 
