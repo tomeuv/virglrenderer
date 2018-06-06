@@ -23,6 +23,8 @@ before_script:
    - export PKG_CONFIG_PATH=$ROOT_DIR/install-prefix/lib/pkgconfig:$ROOT_DIR/install-prefix/lib64/pkgconfig:$ROOT_DIR/install-prefix/share/pkgconfig
    - export LDFLAGS="-L$ROOT_DIR/install-prefix/lib64 -L$ROOT_DIR/install-prefix/lib64"
 
+   - export SDL_VIDEODRIVER=wayland
+
 build_and_test:
   stage: build_and_test
   script:
