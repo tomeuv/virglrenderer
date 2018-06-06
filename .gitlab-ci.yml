@@ -23,6 +23,8 @@ before_script:
    - export PKG_CONFIG_PATH=$ROOT_DIR/install-prefix/lib/pkgconfig:$ROOT_DIR/install-prefix/lib64/pkgconfig:$ROOT_DIR/install-prefix/share/pkgconfig
    - export LDFLAGS="-L$ROOT_DIR/install-prefix/lib64 -L$ROOT_DIR/install-prefix/lib64"
 
+   - export XDG_RUNTIME_DIR=/tmp
+   - export WAYLAND_DISPLAY=wayland-0
    - export SDL_VIDEODRIVER=wayland
 
 build_and_test:
@@ -62,11 +64,8 @@ build_and_test:
    - cp -rf ../../VK-GL-CTS $ROOT_DIR/install-prefix/.
    - cd ..
 
-   - export XDG_RUNTIME_DIR=/tmp
-   - export WAYLAND_DISPLAY=wayland-0
    - nohup weston --backend=headless-backend.so &
    - sleep 2
    - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
-   - /usr/bin/qemu-system-x86_64 -version
-   - fakemachine -v $ROOT_DIR:$ROOT_DIR sh $ROOT_DIR/run-deqp.sh || true
+   - WAYLAND_DEBUG=client fakemachine -v $ROOT_DIR:$ROOT_DIR sh $ROOT_DIR/run-deqp.sh || true
 
