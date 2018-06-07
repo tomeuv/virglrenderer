@@ -1,9 +1,5 @@
 image: docker:latest
 
-cache:
-  paths:
-    - ccache/
-
 variables:
   DOCKER_DRIVER: overlay2
 
