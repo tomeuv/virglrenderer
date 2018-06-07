@@ -8,20 +8,20 @@ stages:
   - build_and_test
 
 before_script:
-   - export ROOT_DIR=${PWD}
+   - export ROOT_DIR=/usr/local
 
    - export GOPATH=/usr/local/go
    - export PATH=$PATH:$GOPATH/bin
+
+   - export LD_LIBRARY_PATH=$ROOT_DIR/lib64:$ROOT_DIR/lib
+   - export PKG_CONFIG_PATH=$ROOT_DIR/lib/pkgconfig:$ROOT_DIR/lib64/pkgconfig:$ROOT_DIR/share/pkgconfig
+   - export LDFLAGS="-L$ROOT_DIR/lib64"
+
    - export PATH="/usr/lib/ccache:$PATH"
    - mkdir -p ccache
-   - export CCACHE_BASEDIR=$ROOT_DIR
-   - export CCACHE_DIR=$ROOT_DIR/ccache
-
+   - export CCACHE_BASEDIR=$PWD
+   - export CCACHE_DIR=$PWD/ccache
    - ccache -s
-
-   - export LD_LIBRARY_PATH=$ROOT_DIR/install-prefix/lib64:$ROOT_DIR/install-prefix/lib
-   - export PKG_CONFIG_PATH=$ROOT_DIR/install-prefix/lib/pkgconfig:$ROOT_DIR/install-prefix/lib64/pkgconfig:$ROOT_DIR/install-prefix/share/pkgconfig
-   - export LDFLAGS="-L$ROOT_DIR/install-prefix/lib64 -L$ROOT_DIR/install-prefix/lib64"
 
    - export XDG_RUNTIME_DIR=/tmp
    - export WAYLAND_DISPLAY=wayland-0
@@ -30,45 +30,20 @@ before_script:
 build_and_test:
   stage: build_and_test
   script:
-   - git clone git://anongit.freedesktop.org/mesa/mesa
-   - cd mesa
-   - git checkout 67f7a16b5985 # Wait for Debian to ship libwayland-egl
-   - git log --oneline -n 1
-   - ./autogen.sh --prefix=$ROOT_DIR/install-prefix --with-platforms="drm x11 wayland" --with-dri-drivers= --with-gallium-drivers="swrast virgl" --enable-debug --enable-llvm ac_cv_path_LLVM_CONFIG=llvm-config-6.0
-   - make -j$(nproc) install
-   - cd ..
-
-   - git clone --depth 1 https://github.com/anholt/libepoxy.git
-   - cd libepoxy
-   - git log --oneline -n 1
-   - ./autogen.sh --prefix=$ROOT_DIR/install-prefix
-   - make -j$(nproc) install
-   - cd ..
-
-   - ./autogen.sh --prefix=$ROOT_DIR/install-prefix
+   - ./autogen.sh --prefix=$ROOT_DIR
    - make -j$(nproc) install
 
    - git clone --depth 1 git://git.qemu.org/qemu.git
    - cd qemu
    - git log --oneline -n 1
-   - ./configure --prefix=$ROOT_DIR/install-prefix --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror --enable-sdl
+   - ./configure --prefix=$ROOT_DIR --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror --enable-sdl
    - cat config-host.mak
    - make -j$(nproc) install
-   - cd ..
-
-   - git clone --depth 1 https://github.com/KhronosGroup/VK-GL-CTS.git
-   - cd VK-GL-CTS
-   - mkdir build
-   - cd build
-   - cmake .. -DDEQP_TARGET=wayland
-   - make -j$(nproc)
-   - cp -rf ../../VK-GL-CTS $ROOT_DIR/install-prefix/.
    - cd ..
 
    - nohup weston --backend=headless-backend.so &
    - sleep 2
 
-   - apt-get -y install systemd-coredump
-   - ln -s $ROOT_DIR/install-prefix/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
-   - fakemachine -v $ROOT_DIR:$ROOT_DIR sh $ROOT_DIR/run-deqp.sh
+   - ln -s $ROOT_DIR/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64 # fakemachine hardcodes the path
+   - fakemachine -v $PWD:$PWD sh $PWD/run-deqp.sh || true
 
