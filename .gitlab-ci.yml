@@ -1,4 +1,4 @@
-image: tomeuv/virgl-ci:latest
+image: tomeuv/virgl-ci:latest-2
 
 cache:
   paths:
