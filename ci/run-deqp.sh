@@ -7,6 +7,7 @@ sleep 3
 cat weston.log
 
 echo "Running dEQP-GLES3.*"
-WAYLAND_DISPLAY=wayland-0 /usr/local/VK-GL-CTS/build/external/openglcts/modules/glcts --deqp-case=dEQP-GLES3.*
+cd /usr/local/VK-GL-CTS/build/external/openglcts/modules
+WAYLAND_DISPLAY=wayland-0 ./glcts --deqp-case=dEQP-GLES3.*
 sleep 3
 
