@@ -1,3 +1,5 @@
+export XDG_RUNTIME_DIR=/tmp
+
 echo "Starting weston in the guest"
 /usr/bin/weston --use-pixman
 sleep 3
