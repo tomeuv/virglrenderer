@@ -118,13 +118,12 @@ RUN git log --oneline -n 1 && \
 WORKDIR /
 
 RUN git clone git://git.qemu.org/qemu.git
-WORKDIR qemu
+WORKDIR /qemu
 RUN git checkout $KNOWN_GOOD_QEMU && \
     git log --oneline -n 1 && \
     ./configure --prefix=$ROOT_DIR --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror --enable-sdl && \
-    cat config-host.mak && \
     make -j$(nproc) install && \
-    rm -rf /virglrenderer
+    rm -rf /qemu
 WORKDIR /
 
 COPY run-weston.sh /usr/bin/.
