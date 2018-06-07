@@ -135,6 +135,5 @@ RUN git checkout $KNOWN_GOOD_QEMU && \
     ln -s /usr/local/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
 WORKDIR /
 
-COPY run-weston.sh /usr/bin/.
 COPY weston.service /usr/lib/systemd/system/.
 

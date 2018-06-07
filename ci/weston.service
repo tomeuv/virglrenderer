@@ -37,7 +37,7 @@ ConditionPathExists=/dev/tty0
 
 # Requires systemd-notify.so Weston plugin.
 Type=notify
-ExecStart=sh /usr/bin/run-weston.sh
+ExecStart=/usr/bin/weston --use-pixman --modules=systemd-notify.so
 
 # Optional watchdog setup
 #TimeoutStartSec=60
