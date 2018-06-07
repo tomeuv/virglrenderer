@@ -1,4 +1,4 @@
-image: tomeuv/virgl-ci:latest-2
+image: docker:latest
 
 cache:
   paths:
@@ -7,43 +7,11 @@ cache:
 stages:
   - build_and_test
 
-before_script:
-   - export ROOT_DIR=/usr/local
-
-   - export GOPATH=/usr/local/go
-   - export PATH=$PATH:$GOPATH/bin
-
-   - export LD_LIBRARY_PATH=$ROOT_DIR/lib64:$ROOT_DIR/lib
-   - export PKG_CONFIG_PATH=$ROOT_DIR/lib/pkgconfig:$ROOT_DIR/lib64/pkgconfig:$ROOT_DIR/share/pkgconfig
-   - export LDFLAGS="-L$ROOT_DIR/lib64"
-
-   - export PATH="/usr/lib/ccache:$PATH"
-   - mkdir -p ccache
-   - export CCACHE_BASEDIR=$PWD
-   - export CCACHE_DIR=$PWD/ccache
-   - ccache -s
-
-   - export XDG_RUNTIME_DIR=/tmp
-   - export WAYLAND_DISPLAY=wayland-0
-   - export SDL_VIDEODRIVER=wayland
-
 build_and_test:
   stage: build_and_test
   script:
-   - ./autogen.sh --prefix=$ROOT_DIR
-   - make -j$(nproc) install
-
-   - git clone --depth 1 git://git.qemu.org/qemu.git
-   - cd qemu
-   - git log --oneline -n 1
-   - ./configure --prefix=$ROOT_DIR --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror --enable-sdl
-   - cat config-host.mak
-   - make -j$(nproc) install
-   - cd ..
-
-   - nohup weston --backend=headless-backend.so &
-   - sleep 2
-
-   - ln -s $ROOT_DIR/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64 # fakemachine hardcodes the path
-   - fakemachine -v $PWD:$PWD sh $PWD/run-deqp.sh || true
+   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+   - docker build ci
+   - docker push $CI_REGISTRY_IMAGE:latest
+#   - fakemachine -v $PWD:$PWD sh $PWD/run-deqp.sh || true
 
