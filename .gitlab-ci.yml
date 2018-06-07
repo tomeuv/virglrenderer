@@ -30,8 +30,9 @@ before_script:
 build_and_test:
   stage: build_and_test
   script:
-   - git clone --depth 1 git://anongit.freedesktop.org/mesa/mesa
+   - git clone git://anongit.freedesktop.org/mesa/mesa
    - cd mesa
+   - git checkout 67f7a16b5985 # Wait for Debian to ship libwayland-egl
    - git log --oneline -n 1
    - ./autogen.sh --prefix=$ROOT_DIR/install-prefix --with-platforms="drm x11 wayland" --with-dri-drivers= --with-gallium-drivers="swrast virgl" --enable-debug --enable-llvm ac_cv_path_LLVM_CONFIG=llvm-config-6.0
    - make -j$(nproc) install
