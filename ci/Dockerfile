@@ -14,12 +14,6 @@ ENV LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib
 ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib64/pkgconfig:/usr/local/share/pkgconfig
 ENV LDFLAGS="-L/usr/local/lib64"
 
-ENV PATH="/usr/lib/ccache:$PATH"
-RUN mkdir -p /ccache
-ENV CCACHE_BASEDIR=/
-ENV CCACHE_DIR=/ccache
-RUN ccache -s
-
 ENV XDG_RUNTIME_DIR=/tmp
 ENV WAYLAND_DISPLAY=wayland-0
 ENV SDL_VIDEODRIVER=wayland
@@ -33,7 +27,6 @@ RUN apt-get update && apt-get -y install git \
                                          libgbm-dev \
                                          libxvmc-dev \
                                          autoconf \
-                                         ccache \
                                          golang-go \
                                          git \
                                          ca-certificates \
@@ -52,8 +45,6 @@ RUN apt-get update && apt-get -y build-dep qemu \
                                            virglrenderer \
                                            libepoxy \
                                            libsdl2
-
-RUN /usr/sbin/update-ccache-symlinks
 
 RUN go get -v github.com/tomeuv/fakemachine/cmd/fakemachine
 RUN go install -x github.com/tomeuv/fakemachine/cmd/fakemachine
