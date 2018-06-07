@@ -14,6 +14,16 @@ ENV LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib
 ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib64/pkgconfig:/usr/local/share/pkgconfig
 ENV LDFLAGS="-L/usr/local/lib64"
 
+ENV PATH="/usr/lib/ccache:$PATH"
+RUN mkdir -p /ccache
+ENV CCACHE_BASEDIR=/
+ENV CCACHE_DIR=/ccache
+RUN ccache -s
+
+ENV XDG_RUNTIME_DIR=/tmp
+ENV WAYLAND_DISPLAY=wayland-0
+ENV SDL_VIDEODRIVER=wayland
+
 RUN echo deb-src http://deb.debian.org/debian testing main >> /etc/apt/sources.list
 RUN apt-get update && apt-get -y install ca-certificates
 RUN apt-get update && apt-get -y install git \
@@ -52,7 +62,7 @@ RUN go install -x github.com/tomeuv/fakemachine/cmd/fakemachine
 RUN hg clone http://hg.libsdl.org/SDL
 WORKDIR /SDL
 RUN ./autogen.sh && \
-    ./configure  --prefix=/usr \
+    ./configure  --prefix=/usr/local \
                  --includedir=\${prefix}/include \
                  --mandir=\${prefix}/share/man \
                  --infodir=\${prefix}/share/info \
@@ -84,7 +94,7 @@ RUN git clone https://github.com/anholt/libepoxy.git
 WORKDIR /libepoxy
 RUN git checkout $KNOWN_GOOD_EPOXY && \
     git log --oneline -n 1 && \
-    ./autogen.sh && \
+    ./autogen.sh --prefix=/usr/local && \
     make -j$(nproc) install && \
     rm -rf /libepoxy
 WORKDIR /
@@ -97,14 +107,14 @@ RUN git checkout $KNOWN_GOOD_CTS && \
     cd build && \
     cmake .. -DDEQP_TARGET=wayland && \
     make -j$(nproc) && \
-    mv /VK-GL-CTS /opt/.
+    mv /VK-GL-CTS /usr/local/.
 WORKDIR /
 
 RUN git clone git://anongit.freedesktop.org/mesa/mesa
 WORKDIR /mesa
 RUN git checkout $KNOWN_GOOD_MESA && \
     git log --oneline -n 1 && \
-    ./autogen.sh --with-platforms="drm x11 wayland" --with-dri-drivers= --with-gallium-drivers="swrast virgl" --enable-debug --enable-llvm ac_cv_path_LLVM_CONFIG=llvm-config-6.0 && \
+    ./autogen.sh --prefix=/usr/local --with-platforms="drm x11 wayland" --with-dri-drivers= --with-gallium-drivers="swrast virgl" --enable-debug --enable-llvm ac_cv_path_LLVM_CONFIG=llvm-config-6.0 && \
     make -j$(nproc) install && \
     rm -rf /mesa
 WORKDIR /
@@ -112,18 +122,20 @@ WORKDIR /
 RUN git clone --depth 1 https://gitlab.freedesktop.org/tomeu/virglrenderer.git
 WORKDIR /virglrenderer
 RUN git log --oneline -n 1 && \
-    ./autogen.sh && \
+    ./autogen.sh --prefix=/usr/local && \
     make -j$(nproc) install && \
     rm -rf /virglrenderer
 WORKDIR /
 
+# fakemachine hardcodes the path to qemu-system-x86_64
 RUN git clone git://git.qemu.org/qemu.git
 WORKDIR /qemu
 RUN git checkout $KNOWN_GOOD_QEMU && \
     git log --oneline -n 1 && \
-    ./configure --prefix=$ROOT_DIR --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror --enable-sdl && \
+    ./configure --prefix=/usr/local --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror --enable-sdl && \
     make -j$(nproc) install && \
-    rm -rf /qemu
+    rm -rf /qemu && \
+    ln -s /usr/local/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
 WORKDIR /
 
 COPY run-weston.sh /usr/bin/.
