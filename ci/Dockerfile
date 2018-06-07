@@ -117,7 +117,7 @@ RUN git log --oneline -n 1 && \
     rm -rf /virglrenderer
 WORKDIR /
 
-RUN git clone --depth 1 git://git.qemu.org/qemu.git
+RUN git clone git://git.qemu.org/qemu.git
 WORKDIR qemu
 RUN git checkout $KNOWN_GOOD_QEMU && \
     git log --oneline -n 1 && \
