@@ -18,6 +18,12 @@ ENV XDG_RUNTIME_DIR=/tmp
 ENV WAYLAND_DISPLAY=wayland-0
 ENV SDL_VIDEODRIVER=wayland
 
+RUN echo 'path-exclude=/usr/share/doc/*' > /etc/dpkg/dpkg.cfg.d/99-exclude-cruft
+RUN echo 'path-exclude=/usr/share/man/*' >> /etc/dpkg/dpkg.cfg.d/99-exclude-cruft
+RUN echo '#!/bin/sh' > /usr/sbin/policy-rc.d
+RUN echo 'exit 101' >> /usr/sbin/policy-rc.d
+RUN chmod +x /usr/sbin/policy-rc.d
+
 RUN echo deb-src http://deb.debian.org/debian testing main >> /etc/apt/sources.list
 RUN apt-get update && apt-get -y install ca-certificates
 RUN apt-get update && apt-get -y install git \
