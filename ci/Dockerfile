@@ -137,3 +137,7 @@ WORKDIR /
 
 COPY weston.service /usr/lib/systemd/system/.
 
+ENV LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib:/usr/local/lib/x86_64-linux-gnu
+ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib64/pkgconfig:/usr/local/lib/x86_64-linux-gnu/pkgconfig:/usr/local/share/pkgconfig
+ENV LDFLAGS="-L/usr/local/lib64 -L/usr/local/lib/x86_64-linux-gnu"
+
