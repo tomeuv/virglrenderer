@@ -7,6 +7,7 @@ ENV KNOWN_GOOD_MESA=67f7a16b5985
 ENV KNOWN_GOOD_CTS=fd68124a565e
 ENV KNOWN_GOOD_EPOXY=737b6918703c
 ENV KNOWN_GOOD_QEMU=41feb5b955f0
+ENV KNOWN_GOOD_PIGLIT=1a2f49f17fb45
 
 ENV GOPATH=/usr/local/go
 ENV PATH=$PATH:/usr/local/go/bin
@@ -99,6 +100,15 @@ RUN git checkout $KNOWN_GOOD_CTS && \
     cmake .. -DDEQP_TARGET=wayland && \
     make -j$(nproc) && \
     mv /VK-GL-CTS /usr/local/.
+WORKDIR /
+
+RUN git clone git://anongit.freedesktop.org/git/piglit
+WORKDIR /piglit
+RUN git checkout $KNOWN_GOOD_PIGLIT && \
+    git log --oneline -n 1 && \
+    cmake . && \
+    make -j$(nproc) && \
+    mv /piglit /usr/local/.
 WORKDIR /
 
 RUN git clone git://anongit.freedesktop.org/mesa/mesa
