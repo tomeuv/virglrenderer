@@ -13,5 +13,5 @@ export PIGLIT_DEQP_EXTRA_ARGS="--deqp-watchdog=enable --deqp-crashhandler=enable
 export PIGLIT_DEQP_GLES2_BIN=/usr/local/VK-GL-CTS/build/modules/gles2/deqp-gles2
 export PIGLIT_DEQP_GLES3_BIN=/usr/local/VK-GL-CTS/build/modules/gles3/deqp-gles3
 
-./piglit run -v -p wayland -x glx tests/deqp_gles2.py /virglrenderer/results
-# tests/deqp_gles3.py tests/opengl.py
+./piglit run -p wayland -t deqp-gles2/capability/limits deqp_gles2 deqp_gles3 /virglrenderer/results
+
