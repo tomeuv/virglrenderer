@@ -60,14 +60,6 @@ RUN hg clone http://hg.libsdl.org/SDL
 WORKDIR /SDL
 RUN ./autogen.sh && \
     ./configure  --prefix=/usr/local \
-                 --includedir=\${prefix}/include \
-                 --mandir=\${prefix}/share/man \
-                 --infodir=\${prefix}/share/info \
-                 --sysconfdir=/etc \
-                 --localstatedir=/var \
-                 --disable-silent-rules \
-                 --libdir=\${prefix}/lib/x86_64-linux-gnu \
-                 --libexecdir=\${prefix}/lib/x86_64-linux-gnu \
                  --disable-rpath \
                  --enable-sdl-dlopen \
                  --disable-loadso \
@@ -136,8 +128,3 @@ RUN git checkout $KNOWN_GOOD_QEMU && \
 WORKDIR /
 
 COPY weston.service /usr/lib/systemd/system/.
-
-ENV LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib:/usr/local/lib/x86_64-linux-gnu
-ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/local/lib64/pkgconfig:/usr/local/lib/x86_64-linux-gnu/pkgconfig:/usr/local/share/pkgconfig
-ENV LDFLAGS="-L/usr/local/lib64 -L/usr/local/lib/x86_64-linux-gnu"
-
