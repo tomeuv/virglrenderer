@@ -120,10 +120,11 @@ RUN git checkout $KNOWN_GOOD_MESA && \
     rm -rf /mesa
 WORKDIR /
 
+RUN git clone https://gitlab.freedesktop.org/tomeu/virglrenderer.git
 ARG CI_COMMIT_SHA=HEAD
-RUN git clone --depth 1 https://gitlab.freedesktop.org/tomeu/virglrenderer.git
 WORKDIR /virglrenderer
-RUN git checkout ${CI_COMMIT_SHA} && \
+RUN git fetch && \
+    git checkout ${CI_COMMIT_SHA} && \
     git log --oneline -n 1 && \
     ./autogen.sh --prefix=/usr/local && \
     make -j$(nproc) install && \
