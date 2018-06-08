@@ -8,10 +8,11 @@ sleep 3
 cd /usr/local/VK-GL-CTS/build/external/openglcts/modules
 
 echo "Running GLES2 on GLES"
-WAYLAND_DISPLAY=wayland-0 ./glcts --deqp-caselist-file=/virglrenderer/ci/deqp-gles2-gles.txt
+WAYLAND_DISPLAY=wayland-0 ./glcts --deqp-caselist-file=/virglrenderer/ci/deqp-gles2-gles.txt | tee /tmp/gles2.log
 
 echo "Running GLES3 on GLES"
-WAYLAND_DISPLAY=wayland-0 ./glcts --deqp-caselist-file=/virglrenderer/ci/deqp-gles3-gles.txt
+WAYLAND_DISPLAY=wayland-0 ./glcts --deqp-caselist-file=/virglrenderer/ci/deqp-gles3-gles.txt | tee /tmp/gles3.log
 
-sleep 3
+grep Fail /tmp/gles2.log
+grep Fail /tmp/gles3.log
 

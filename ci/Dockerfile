@@ -45,7 +45,8 @@ RUN apt-get update && apt-get -y install git \
                                          libsdl2-dev \
                                          strace \
                                          mercurial \
-                                         systemd-coredump
+                                         systemd-coredump \
+                                         kbd
 RUN apt-get update && apt-get -y build-dep qemu \
                                            mesa \
                                            virglrenderer \
