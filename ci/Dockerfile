@@ -24,7 +24,7 @@ RUN echo '#!/bin/sh' > /usr/sbin/policy-rc.d
 RUN echo 'exit 101' >> /usr/sbin/policy-rc.d
 RUN chmod +x /usr/sbin/policy-rc.d
 
-RUN echo deb-src http://deb.debian.org/debian testing main >> /etc/apt/sources.list
+RUN echo deb-src http://deb.debian.org/debian unstable main >> /etc/apt/sources.list
 RUN apt-get update && apt-get -y install ca-certificates
 RUN apt-get update && apt-get -y install git \
                                          check \
