@@ -2,8 +2,6 @@ echo "Starting weston in the host"
 nohup weston --backend=headless-backend.so &
 sleep 3
 
-DEBIAN_FRONTEND=noninteractive apt-get -y install time
-
 time dd if=/usr/bin/qemu-system-x86_64 of=/dev/null
 
 time dd if=/usr/bin/qemu-system-x86_64 of=/dev/null

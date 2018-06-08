@@ -1,14 +1,6 @@
 FROM debian:unstable-slim
 
-ARG DEBIAN_FRONTEND=noninteractive
-
-# Wait for Debian to ship libwayland-egl
-ENV KNOWN_GOOD_MESA=67f7a16b5985
-ENV KNOWN_GOOD_CTS=fd68124a565e
-ENV KNOWN_GOOD_EPOXY=737b6918703c
-ENV KNOWN_GOOD_QEMU=41feb5b955f0
-ENV KNOWN_GOOD_PIGLIT=1a2f49f17fb45
-
+ENV DEBIAN_FRONTEND=noninteractive
 ENV GOPATH=/usr/local/go
 ENV PATH=$PATH:/usr/local/go/bin
 ENV LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib
@@ -27,8 +19,17 @@ RUN chmod +x /usr/sbin/policy-rc.d
 
 RUN echo deb-src http://deb.debian.org/debian unstable main >> /etc/apt/sources.list
 RUN apt-get update && apt-get -y install ca-certificates
-RUN apt-get update && apt-get -y install git \
-                                         check \
+RUN apt-get update && apt-get -y install git mercurial
+
+RUN hg clone http://hg.libsdl.org/SDL
+RUN git clone https://github.com/anholt/libepoxy.git
+RUN git clone https://github.com/KhronosGroup/VK-GL-CTS.git
+RUN git clone git://anongit.freedesktop.org/git/piglit
+RUN git clone git://anongit.freedesktop.org/mesa/mesa
+RUN git clone https://gitlab.freedesktop.org/tomeu/virglrenderer.git
+RUN git clone git://git.qemu.org/qemu.git
+
+RUN apt-get update && apt-get -y install check \
                                          weston \
                                          linux-image-amd64 \
                                          libgbm-dev \
@@ -45,8 +46,8 @@ RUN apt-get update && apt-get -y install git \
                                          spirv-headers \
                                          libsdl2-dev \
                                          strace \
-                                         mercurial \
                                          systemd-coredump \
+                                         time \
                                          kbd
 RUN apt-get update && apt-get -y build-dep qemu \
                                            mesa \
@@ -55,12 +56,9 @@ RUN apt-get update && apt-get -y build-dep qemu \
                                            libsdl2 \
                                            piglit
 
-RUN go get -v github.com/tomeuv/fakemachine/cmd/fakemachine
-RUN go install -x github.com/tomeuv/fakemachine/cmd/fakemachine
-
 # Drop this once http://hg.libsdl.org/SDL/rev/295cf9910d75 makes it into Debian
-RUN hg clone http://hg.libsdl.org/SDL
 WORKDIR /SDL
+RUN hg pull -u
 RUN ./autogen.sh && \
     ./configure  --prefix=/usr/local \
                  --disable-rpath \
@@ -82,18 +80,24 @@ RUN ./autogen.sh && \
     rm -rf /SDL
 WORKDIR /
 
-RUN git clone https://github.com/anholt/libepoxy.git
+ARG KNOWN_GOOD_FAKEMACHINE=97d04bfb1246
+RUN go get -v github.com/tomeuv/fakemachine/cmd/fakemachine
+RUN go install -x github.com/tomeuv/fakemachine/cmd/fakemachine
+
+ARG KNOWN_GOOD_EPOXY=737b6918703c
 WORKDIR /libepoxy
-RUN git checkout $KNOWN_GOOD_EPOXY && \
+RUN git fetch && \
+    git checkout ${KNOWN_GOOD_EPOXY} && \
     git log --oneline -n 1 && \
     ./autogen.sh --prefix=/usr/local && \
     make -j$(nproc) install && \
     rm -rf /libepoxy
 WORKDIR /
 
-RUN git clone https://github.com/KhronosGroup/VK-GL-CTS.git
+ARG KNOWN_GOOD_CTS=fd68124a565e
 WORKDIR /VK-GL-CTS
-RUN git checkout $KNOWN_GOOD_CTS && \
+RUN git fetch && \
+    git checkout ${KNOWN_GOOD_CTS} && \
     git log --oneline -n 1 && \
     mkdir build && \
     cd build && \
@@ -102,25 +106,27 @@ RUN git checkout $KNOWN_GOOD_CTS && \
     mv /VK-GL-CTS /usr/local/.
 WORKDIR /
 
-RUN git clone git://anongit.freedesktop.org/git/piglit
+ARG KNOWN_GOOD_PIGLIT=1a2f49f17fb45
 WORKDIR /piglit
-RUN git checkout $KNOWN_GOOD_PIGLIT && \
+RUN git fetch && \
+    git checkout ${KNOWN_GOOD_PIGLIT} && \
     git log --oneline -n 1 && \
     cmake . && \
     make -j$(nproc) && \
     mv /piglit /usr/local/.
 WORKDIR /
 
-RUN git clone git://anongit.freedesktop.org/mesa/mesa
+# Wait for Debian to ship libwayland-egl
+ARG KNOWN_GOOD_MESA=67f7a16b5985
 WORKDIR /mesa
-RUN git checkout $KNOWN_GOOD_MESA && \
+RUN git fetch && \
+    git checkout ${KNOWN_GOOD_MESA} && \
     git log --oneline -n 1 && \
     ./autogen.sh --prefix=/usr/local --with-platforms="drm x11 wayland" --with-dri-drivers= --with-gallium-drivers="swrast virgl" --enable-debug --enable-llvm ac_cv_path_LLVM_CONFIG=llvm-config-6.0 && \
     make -j$(nproc) install && \
     rm -rf /mesa
 WORKDIR /
 
-RUN git clone https://gitlab.freedesktop.org/tomeu/virglrenderer.git
 ARG CI_COMMIT_SHA=HEAD
 WORKDIR /virglrenderer
 RUN git fetch && \
@@ -132,9 +138,10 @@ RUN git fetch && \
 WORKDIR /
 
 # fakemachine hardcodes the path to qemu-system-x86_64
-RUN git clone git://git.qemu.org/qemu.git
+ARG KNOWN_GOOD_QEMU=41feb5b955f0
 WORKDIR /qemu
-RUN git checkout $KNOWN_GOOD_QEMU && \
+RUN git fetch && \
+    git checkout ${KNOWN_GOOD_QEMU} && \
     git log --oneline -n 1 && \
     ./configure --prefix=/usr/local --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror --enable-sdl && \
     make -j$(nproc) install && \
