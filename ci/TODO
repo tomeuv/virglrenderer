@@ -1,0 +1,9 @@
+- Also run with GL on the host when fakemachine supports it
+- Stop building SDL
+- Upgrade Mesa once Debian ships a new enough Wayland (with libwayland-egl)
+- Run static checkers (syntax and maybe others)
+- Run Valgrind
+- Run fuzzers
+- Run weston in the guest as a systemd service
+- Run performance tests
+- Publish results
