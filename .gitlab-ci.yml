@@ -14,6 +14,7 @@ build_and_test:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE:latest || true  # Just for the cache
     - docker build --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE --cache-from $CI_REGISTRY_IMAGE:latest ci
+    - docker images
     - docker push $CI_REGISTRY_IMAGE:latest  # Just for the cache
 
     - docker run --device=/dev/kvm -v $PWD:/virglrenderer $CI_REGISTRY_IMAGE:latest sh /virglrenderer/ci/run-tests.sh

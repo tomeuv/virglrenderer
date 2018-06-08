@@ -1,5 +1,7 @@
 export XDG_RUNTIME_DIR=/tmp
 
+cat /etc/fstab
+
 # TODO This should be started as a systemd service
 echo "Starting weston in the guest"
 nohup /usr/bin/openvt -c 7 -w -v -s -- weston --backend=drm-backend.so --use-pixman --log weston.log &
