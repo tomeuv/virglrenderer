@@ -51,7 +51,8 @@ RUN apt-get update && apt-get -y build-dep qemu \
                                            mesa \
                                            virglrenderer \
                                            libepoxy \
-                                           libsdl2
+                                           libsdl2 \
+                                           piglit
 
 RUN go get -v github.com/tomeuv/fakemachine/cmd/fakemachine
 RUN go install -x github.com/tomeuv/fakemachine/cmd/fakemachine
