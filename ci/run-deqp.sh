@@ -11,27 +11,44 @@ export PIGLIT_DEQP_GLES2_BIN=/usr/local/VK-GL-CTS/build/modules/gles2/deqp-gles2
 export PIGLIT_DEQP_GLES3_BIN=/usr/local/VK-GL-CTS/build/modules/gles3/deqp-gles3
 
 cd /usr/local/VK-GL-CTS/build/external/openglcts/modules/
-time ./glcts --deqp-case=dEQP-GLES2.capability.limits.*
 
-time ./glcts --deqp-case=dEQP-GLES2.capability.limits.* --deqp-watchdog=enable
+time dd if=/usr/bin/qemu-system-x86_64 of=/dev/null
 
-time ./glcts --deqp-case=dEQP-GLES2.capability.limits.* --deqp-crashhandler=enable
+time dd if=/usr/bin/qemu-system-x86_64 of=/dev/null
 
-time ./glcts --deqp-case=dEQP-GLES2.capability.limits.* --deqp-watchdog=enable --deqp-crashhandler=enable
+time ./glcts --deqp-case=dEQP-GLES2*limits* --deqp-watchdog=enable --deqp-crashhandler=enable
+
+time sh -c "./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.capability.limits.vertex_attribs && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.capability.limits.varying_vectors && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.capability.limits.vertex_uniform_vectors && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.capability.limits.fragment_uniform_vectors && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.capability.limits.texture_image_units && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.capability.limits.vertex_texture_image_units && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.capability.limits.combined_texture_image_units && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.capability.limits.texture_2d_size && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.capability.limits.texture_cube_size && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.capability.limits.renderbuffer_size && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.subpixel_bits && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.max_texture_size && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.max_cube_map_texture_size && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.aliased_point_size_range && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.aliased_line_width_range && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.num_compressed_texture_formats && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.num_shader_binary_formats && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.shader_compiler && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.max_vertex_attribs && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.max_vertex_uniform_vectors && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.max_varying_vectors && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.max_combined_texture_image_units && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.max_vertex_texture_image_units && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.max_texture_image_units && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.max_fragment_uniform_vectors && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.implementation_limits.max_renderbuffer_size && \
+./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.functional.rasterization.limits.points"
 
 cd /usr/local/piglit
 mkdir -p /virglrenderer/results
 
-export PIGLIT_DEQP_EXTRA_ARGS=""
-time ./piglit run -p wayland -t limits deqp_gles2 /virglrenderer/results
-
-export PIGLIT_DEQP_EXTRA_ARGS="--deqp-watchdog=enable"
-time ./piglit run -p wayland -t limits deqp_gles2 /virglrenderer/results
-
-export PIGLIT_DEQP_EXTRA_ARGS="--deqp-crashhandler=enable"
-time ./piglit run -p wayland -t limits deqp_gles2 /virglrenderer/results
-
-export PIGLIT_DEQP_EXTRA_ARGS="--deqp-watchdog=enable --deqp-crashhandler=enable"
 time ./piglit run -p wayland -t limits deqp_gles2 /virglrenderer/results
 
 #./piglit run -p wayland deqp_gles2 deqp_gles3 /virglrenderer/results
