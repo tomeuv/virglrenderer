@@ -144,6 +144,7 @@ WORKDIR /
 
 COPY weston.service /usr/lib/systemd/system/.
 
+RUN apt-get -y install busybox
 RUN apt-get -y purge *-dev golang-go spirv-headers
 
 RUN du -s /* || true
