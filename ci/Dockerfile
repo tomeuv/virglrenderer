@@ -1,13 +1,7 @@
 FROM debian:unstable-slim
 
-VOLUME /ccache
-RUN ls -l /ccache
-
-#RUN mkdir -p /ccache
-
+RUN mkdir -p /ccache
 COPY ccache/* /ccache/.
-RUN ls -l /ccache
-ENV PATH="/usr/lib/ccache:$PATH"
 ENV CCACHE_BASEDIR=/
 ENV CCACHE_DIR=/ccache
 
@@ -62,7 +56,8 @@ RUN apt-get update && \
       piglit && \
     apt-get clean
 
-RUN ccache -s
+# Enable ccache only now to avoid growing the layers too much
+ENV PATH="/usr/lib/ccache:$PATH"
 
 ARG CI_COMMIT_SHA=HEAD
 WORKDIR /virglrenderer
