@@ -19,6 +19,8 @@ build_and_test:
     - docker pull $CI_REGISTRY_IMAGE:latest || true  # Just for the cache
     - docker history $CI_REGISTRY_IMAGE:latest
 
+    - mkdir -p ci/ccache
+    - touch ci/ccache/dummy # Just to keep Docker happy
     - docker build --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE --cache-from $CI_REGISTRY_IMAGE:latest ci
 
     # Copy ccache out
