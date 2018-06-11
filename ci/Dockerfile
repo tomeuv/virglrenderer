@@ -7,7 +7,6 @@ RUN ls -l /ccache
 ENV PATH="/usr/lib/ccache:$PATH"
 ENV CCACHE_BASEDIR=/
 ENV CCACHE_DIR=/ccache
-RUN ccache -s
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GOPATH=/usr/local/go
@@ -59,6 +58,8 @@ RUN apt-get update && \
       libsdl2 \
       piglit && \
     apt-get clean
+
+RUN ccache -s
 
 ARG KNOWN_GOOD_EPOXY=737b6918703c
 WORKDIR /libepoxy
