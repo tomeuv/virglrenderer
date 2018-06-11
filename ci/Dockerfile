@@ -1,7 +1,7 @@
 FROM debian:unstable-slim
 
 RUN mkdir -p /ccache
-COPY ccache/* /ccache/.
+COPY ccache/* /ccache/
 ENV CCACHE_BASEDIR=/
 ENV CCACHE_DIR=/ccache
 
