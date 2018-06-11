@@ -1,7 +1,9 @@
 FROM debian:unstable-slim
 
 VOLUME /ccache
-COPY ccache/* /ccache/.
+RUN ls -l /ccache
+COPY ccache/* /ccache/
+RUN ls -l /ccache
 ENV PATH="/usr/lib/ccache:$PATH"
 ENV CCACHE_BASEDIR=/
 ENV CCACHE_DIR=/ccache
