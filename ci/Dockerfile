@@ -1,7 +1,10 @@
 FROM debian:unstable-slim
 
 #VOLUME /ccache
-RUN ls -l /ccache
+#RUN ls -l /ccache
+
+# RUN mkdir /ccache
+
 COPY ccache/* /ccache/.
 RUN ls -l /ccache
 ENV PATH="/usr/lib/ccache:$PATH"
