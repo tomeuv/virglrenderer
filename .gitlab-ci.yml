@@ -20,7 +20,6 @@ build_and_test:
 
     - docker run --device=/dev/kvm -v $PWD:/virglrenderer $CI_REGISTRY_IMAGE:latest sh /virglrenderer/ci/run-tests.sh
   artifacts:
-   when:
-     - always
+   when: always
    paths:
      - results/
