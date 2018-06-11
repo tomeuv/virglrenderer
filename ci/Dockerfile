@@ -70,6 +70,8 @@ RUN git clone https://gitlab.freedesktop.org/tomeu/virglrenderer.git . && \
     git log --oneline -n 1 && \
     ./autogen.sh --prefix=/usr/local && \
     make -j$(nproc) install && \
+    ccache -s && \
+    ls -l /ccache && \
     rm -rf /virglrenderer
 WORKDIR /
 
