@@ -1,4 +1,5 @@
 export XDG_RUNTIME_DIR=/tmp
+export LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib
 
 # TODO This should be started as a systemd service
 echo "Starting weston in the guest"
