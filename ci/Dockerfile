@@ -1,5 +1,12 @@
 FROM debian:unstable-slim
 
+VOLUME /ccache
+COPY ccache/* /ccache/.
+ENV PATH="/usr/lib/ccache:$PATH"
+ENV CCACHE_BASEDIR=/
+ENV CCACHE_DIR=/ccache
+RUN ccache -s
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GOPATH=/usr/local/go
 ENV PATH=$PATH:/usr/local/go/bin
@@ -29,6 +36,7 @@ RUN apt-get update && \
       golang-go \
       cmake \
       spirv-headers \
+      ccache \
       weston \
       check \
       linux-image-amd64 \
@@ -39,6 +47,7 @@ RUN apt-get update && \
       strace \
       systemd-coredump \
       time \
+      busybox \
       kbd && \
     apt-get -y build-dep --no-install-recommends \
       qemu \
@@ -145,11 +154,4 @@ RUN git clone git://git.qemu.org/qemu.git . && \
 WORKDIR /
 
 COPY weston.service /usr/lib/systemd/system/.
-RUN find /usr -name libEGL\*
 
-RUN apt-get -y purge *-dev golang-go spirv-headers
-RUN apt-get -y install busybox glusterfs-common
-
-RUN du -s /* || true
-RUN du -s /*/* || true
-RUN du -s /usr/local/* || true
