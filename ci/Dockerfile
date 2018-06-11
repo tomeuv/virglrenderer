@@ -96,6 +96,7 @@ RUN git clone https://github.com/KhronosGroup/VK-GL-CTS.git . && \
     cd build && \
     cmake .. -DDEQP_TARGET=wayland && \
     make -j$(nproc) && \
+    rm -rf /VK-GL-CTS/.git && \
     mv /VK-GL-CTS /usr/local/.
 WORKDIR /
 
@@ -106,6 +107,7 @@ RUN git clone git://anongit.freedesktop.org/git/piglit . && \
     git log --oneline -n 1 && \
     cmake . && \
     make -j$(nproc) && \
+    rm -rf /piglit/.git && \
     mv /piglit /usr/local/.
 WORKDIR /
 
