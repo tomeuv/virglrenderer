@@ -58,9 +58,6 @@ RUN apt-get update && \
       piglit && \
     apt-get clean
 
-# Enable ccache only now to avoid growing the layers too much
-ENV CCACHE_DISABLE=0
-
 # Drop this once http://hg.libsdl.org/SDL/rev/295cf9910d75 makes it into Debian
 WORKDIR /SDL
 RUN hg clone http://hg.libsdl.org/SDL . && \
@@ -133,6 +130,9 @@ RUN git clone git://anongit.freedesktop.org/mesa/mesa . && \
     make -j$(nproc) install && \
     rm -rf /mesa
 WORKDIR /
+
+# Enable ccache only now to avoid growing the layers too much
+ENV CCACHE_DISABLE=0
 
 ARG CI_COMMIT_SHA=HEAD
 WORKDIR /virglrenderer
