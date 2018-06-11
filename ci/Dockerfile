@@ -73,7 +73,7 @@ RUN hg clone http://hg.libsdl.org/SDL . && \
     rm -rf /SDL
 WORKDIR /
 
-ARG KNOWN_GOOD_FAKEMACHINE=97d04bfb1246
+ARG KNOWN_GOOD_FAKEMACHINE=690fab228efe
 RUN go get -v github.com/tomeuv/fakemachine/cmd/fakemachine
 RUN go install -x github.com/tomeuv/fakemachine/cmd/fakemachine
 
