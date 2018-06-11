@@ -145,6 +145,7 @@ RUN git clone git://git.qemu.org/qemu.git . && \
 WORKDIR /
 
 COPY weston.service /usr/lib/systemd/system/.
+RUN find /usr -name libEGL\*
 
 RUN apt-get -y purge *-dev golang-go spirv-headers
 RUN apt-get -y install busybox glusterfs-common
