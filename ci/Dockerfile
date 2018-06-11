@@ -1,9 +1,9 @@
 FROM debian:unstable-slim
 
-#VOLUME /ccache
-#RUN ls -l /ccache
+VOLUME /ccache
+RUN ls -l /ccache
 
-RUN mkdir -p /ccache
+#RUN mkdir -p /ccache
 
 COPY ccache/* /ccache/.
 RUN ls -l /ccache
