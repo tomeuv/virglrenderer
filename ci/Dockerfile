@@ -96,8 +96,8 @@ RUN git clone https://github.com/KhronosGroup/VK-GL-CTS.git . && \
     cd build && \
     cmake .. -DDEQP_TARGET=wayland && \
     make -j$(nproc) && \
-    rm -rf /VK-GL-CTS/.git && \
-    mv /VK-GL-CTS /usr/local/.
+    mv /VK-GL-CTS/build /usr/local/VK-GL-CTS && \
+    rm -rf /VK-GL-CTS
 WORKDIR /
 
 ARG KNOWN_GOOD_PIGLIT=1a2f49f17fb45
@@ -153,5 +153,3 @@ RUN apt-get -y install busybox glusterfs-common
 RUN du -s /* || true
 RUN du -s /*/* || true
 RUN du -s /usr/local/* || true
-RUN du -s /usr/local/VK-GL-CTS/build || true
-

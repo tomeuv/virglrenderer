@@ -8,8 +8,8 @@ sleep 1
 
 export WAYLAND_DISPLAY=wayland-0
 export PIGLIT_DEQP_EXTRA_ARGS="--deqp-watchdog=enable --deqp-crashhandler=enable"
-export PIGLIT_DEQP_GLES2_BIN=/usr/local/VK-GL-CTS/build/modules/gles2/deqp-gles2
-export PIGLIT_DEQP_GLES3_BIN=/usr/local/VK-GL-CTS/build/modules/gles3/deqp-gles3
+export PIGLIT_DEQP_GLES2_BIN=/usr/local/VK-GL-CTS/modules/gles2/deqp-gles2
+export PIGLIT_DEQP_GLES3_BIN=/usr/local/VK-GL-CTS/modules/gles3/deqp-gles3
 
 cd /usr/local/piglit
 mkdir -p /virglrenderer/results
