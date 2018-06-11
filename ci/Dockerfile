@@ -61,6 +61,34 @@ RUN apt-get update && \
 
 RUN ccache -s
 
+# Drop this once http://hg.libsdl.org/SDL/rev/295cf9910d75 makes it into Debian
+WORKDIR /SDL
+RUN hg clone http://hg.libsdl.org/SDL . && \
+    ./autogen.sh && \
+    ./configure  --prefix=/usr/local \
+                 --disable-rpath \
+                 --enable-sdl-dlopen \
+                 --disable-loadso \
+                 --disable-nas \
+                 --disable-esd \
+                 --disable-arts \
+                 --disable-alsa-shared \
+                 --disable-pulseaudio-shared \
+                 --enable-ibus \
+                 --disable-x11-shared \
+                 --disable-video-directfb \
+                 --enable-video-opengles \
+                 --enable-video-wayland \
+                 --disable-wayland-shared \
+                 --disable-video-vulkan && \
+    make -j$(nproc) install && \
+    rm -rf /SDL
+WORKDIR /
+
+ARG KNOWN_GOOD_FAKEMACHINE=690fab228efe
+RUN go get -v github.com/tomeuv/fakemachine/cmd/fakemachine
+RUN go install -x github.com/tomeuv/fakemachine/cmd/fakemachine
+
 ARG KNOWN_GOOD_EPOXY=737b6918703c
 WORKDIR /libepoxy
 RUN git clone https://github.com/anholt/libepoxy.git . && \
@@ -69,6 +97,63 @@ RUN git clone https://github.com/anholt/libepoxy.git . && \
     ./autogen.sh --prefix=/usr/local && \
     make -j$(nproc) install && \
     rm -rf /libepoxy
+WORKDIR /
+
+ARG KNOWN_GOOD_CTS=fd68124a565e
+WORKDIR /VK-GL-CTS
+RUN git clone https://github.com/KhronosGroup/VK-GL-CTS.git . && \
+    git checkout ${KNOWN_GOOD_CTS} && \
+    git log --oneline -n 1 && \
+    mkdir build && \
+    cd build && \
+    cmake .. -DDEQP_TARGET=wayland && \
+    make -j$(nproc) && \
+    mv /VK-GL-CTS/build /usr/local/VK-GL-CTS && \
+    rm -rf /VK-GL-CTS
+WORKDIR /
+
+ARG KNOWN_GOOD_PIGLIT=1a2f49f17fb45
+WORKDIR /piglit
+RUN git clone git://anongit.freedesktop.org/git/piglit . && \
+    git checkout ${KNOWN_GOOD_PIGLIT} && \
+    git log --oneline -n 1 && \
+    cmake . && \
+    make -j$(nproc) && \
+    rm -rf /piglit/.git && \
+    mv /piglit /usr/local/.
+WORKDIR /
+
+# Wait for Debian to ship libwayland-egl
+ARG KNOWN_GOOD_MESA=67f7a16b5985
+WORKDIR /mesa
+RUN git clone git://anongit.freedesktop.org/mesa/mesa . && \
+    git checkout ${KNOWN_GOOD_MESA} && \
+    git log --oneline -n 1 && \
+    ./autogen.sh --prefix=/usr/local --with-platforms="drm x11 wayland" --with-dri-drivers= --with-gallium-drivers="swrast virgl" --enable-debug --enable-llvm ac_cv_path_LLVM_CONFIG=llvm-config-6.0 && \
+    make -j$(nproc) install && \
+    rm -rf /mesa
+WORKDIR /
+
+ARG CI_COMMIT_SHA=HEAD
+WORKDIR /virglrenderer
+RUN git clone https://gitlab.freedesktop.org/tomeu/virglrenderer.git . && \
+    git checkout ${CI_COMMIT_SHA} && \
+    git log --oneline -n 1 && \
+    ./autogen.sh --prefix=/usr/local && \
+    make -j$(nproc) install && \
+    rm -rf /virglrenderer
+WORKDIR /
+
+# fakemachine hardcodes the path to qemu-system-x86_64
+ARG KNOWN_GOOD_QEMU=41feb5b955f0
+WORKDIR /qemu
+RUN git clone git://git.qemu.org/qemu.git . && \
+    git checkout ${KNOWN_GOOD_QEMU} && \
+    git log --oneline -n 1 && \
+    ./configure --prefix=/usr/local --target-list=x86_64-softmmu --enable-kvm --enable-virglrenderer --enable-debug --disable-werror --enable-sdl && \
+    make -j$(nproc) install && \
+    rm -rf /qemu && \
+    ln -s /usr/local/bin/qemu-system-x86_64 /usr/bin/qemu-system-x86_64
 WORKDIR /
 
 COPY weston.service /usr/lib/systemd/system/.
