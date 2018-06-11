@@ -150,3 +150,8 @@ RUN git fetch && \
 WORKDIR /
 
 COPY weston.service /usr/lib/systemd/system/.
+
+RUN apt-get -y purge *-dev && apt-get -y autoremove && apt-get clean
+
+RUN du -s /* || true
+RUN du -s /*/* || true
