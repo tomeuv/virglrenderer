@@ -26,6 +26,8 @@ build_and_test:
     # Copy ccache out
     - CON=$(docker run -d $CI_REGISTRY_IMAGE:latest /bin/bash) &&
       docker cp ${CON}:/ccache ci/.
+    - ls -l ci
+    - ls -l ci/ccache || true
 
     - docker images
     - docker history $CI_REGISTRY_IMAGE:latest
