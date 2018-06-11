@@ -31,7 +31,6 @@ build_and_test:
     - docker history $CI_REGISTRY_IMAGE:latest
     - docker push $CI_REGISTRY_IMAGE:latest  # Just for the cache
 
-    - docker run $CI_REGISTRY_IMAGE:latest ccache -s
 #    - docker run --device=/dev/kvm -v $PWD:/virglrenderer $CI_REGISTRY_IMAGE:latest sh /virglrenderer/ci/run-tests.sh
   artifacts:
    when: always

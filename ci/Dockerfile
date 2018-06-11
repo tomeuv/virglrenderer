@@ -64,6 +64,7 @@ RUN ccache -s
 ARG CI_COMMIT_SHA=HEAD
 WORKDIR /virglrenderer
 RUN git clone https://gitlab.freedesktop.org/tomeu/virglrenderer.git . && \
+    ccache -s && \
     git checkout ${CI_COMMIT_SHA} && \
     git log --oneline -n 1 && \
     ./autogen.sh --prefix=/usr/local && \
