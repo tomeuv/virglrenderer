@@ -4,6 +4,8 @@ RUN mkdir -p /ccache
 COPY ccache/* /ccache/
 ENV CCACHE_BASEDIR=/
 ENV CCACHE_DIR=/ccache
+ENV PATH="/usr/lib/ccache:$PATH"
+ENV CCACHE_DISABLE=1
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GOPATH=/usr/local/go
@@ -57,7 +59,7 @@ RUN apt-get update && \
     apt-get clean
 
 # Enable ccache only now to avoid growing the layers too much
-ENV PATH="/usr/lib/ccache:$PATH"
+ENV CCACHE_DISABLE=0
 
 ARG CI_COMMIT_SHA=HEAD
 WORKDIR /virglrenderer
