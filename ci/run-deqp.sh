@@ -1,7 +1,5 @@
 export XDG_RUNTIME_DIR=/tmp
 
-cat /etc/fstab
-
 # TODO This should be started as a systemd service
 echo "Starting weston in the guest"
 nohup /usr/bin/openvt -c 7 -w -v -s -- weston --backend=drm-backend.so --use-pixman --log weston.log &
@@ -14,11 +12,7 @@ export PIGLIT_DEQP_GLES3_BIN=/usr/local/VK-GL-CTS/build/modules/gles3/deqp-gles3
 
 cd /usr/local/VK-GL-CTS/build/external/openglcts/modules/
 
-time dd if=/usr/bin/qemu-system-x86_64 of=/dev/null
-
-time dd if=/usr/bin/qemu-system-x86_64 of=/dev/null
-
-time ./glcts --deqp-case=dEQP-GLES2*limits* --deqp-watchdog=enable --deqp-crashhandler=enable
+time strace -ff ./glcts --deqp-case=dEQP-GLES2*limits* --deqp-watchdog=enable --deqp-crashhandler=enable
 
 time sh -c "./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.capability.limits.vertex_attribs && \
 ./glcts --deqp-watchdog=enable --deqp-crashhandler=enable --deqp-case=dEQP-GLES2.capability.limits.varying_vectors && \
