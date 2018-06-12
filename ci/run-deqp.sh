@@ -17,9 +17,11 @@ cd /usr/local/piglit
 mkdir -p /virglrenderer/results
 
 
+./piglit run -j12 -c -p wayland deqp_gles2 /virglrenderer/results
+
 #iostat -mxzs 5 &
-time perf record ./piglit run -j12 -c -t color_clear_value_ -p wayland deqp_gles2 /virglrenderer/results
-PAGER= perf report -v --stdio | head -1000
+#time perf record ./piglit run -j12 -c -t color_clear_value_ -p wayland deqp_gles2 /virglrenderer/results
+#PAGER= perf report -v --stdio | head -1000
 #killall iostat
 
 
