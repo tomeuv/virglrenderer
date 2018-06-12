@@ -15,11 +15,11 @@ build_and_test:
     - docker pull $CI_REGISTRY_IMAGE:latest || true  # Just for the cache
     - docker history $CI_REGISTRY_IMAGE:latest
 
-    #- docker build --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE --cache-from $CI_REGISTRY_IMAGE:latest ci
+    - docker build --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE --cache-from $CI_REGISTRY_IMAGE:latest ci
 
-    #- docker images
-    #- docker history $CI_REGISTRY_IMAGE:latest
-    #- docker push $CI_REGISTRY_IMAGE:latest  # Just for the cache
+    - docker images
+    - docker history $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:latest  # Just for the cache
 
     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/dri/card0 --device=/dev/dri/renderD128 --device=/dev/kvm -v $PWD:/virglrenderer $CI_REGISTRY_IMAGE:latest sh /virglrenderer/ci/run-tests.sh
   artifacts:
