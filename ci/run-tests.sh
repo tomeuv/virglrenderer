@@ -1,3 +1,5 @@
+set -x
+
 echo "Starting weston in the host"
 nohup weston --backend=headless-backend.so &
 sleep 1

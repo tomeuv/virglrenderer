@@ -1,3 +1,5 @@
+set -x
+
 export XDG_RUNTIME_DIR=/tmp
 export LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib
 
