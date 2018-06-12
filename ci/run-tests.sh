@@ -1,8 +1,9 @@
 set -x
 
 echo "Starting weston in the host"
-nohup weston --backend=drm-backend.so --log weston.log &
-sleep 1
+nohup /usr/bin/openvt -c 7 -w -v -s -- weston --backend=drm-backend.so --log weston.log &
+sleep 3
+cat weston.log
 
 #DEBIAN_FRONTEND=noninteractive apt-get -y install sysstat  linux-base   linux-perf-4.16 
 
