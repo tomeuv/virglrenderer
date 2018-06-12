@@ -15,7 +15,7 @@ mkdir -p /virglrenderer/results2
 #iostat -mxzs 5 &
 
 time perf_4.16 record -ag -o perf.data -- ./piglit run -j 12 -c -t color_c -p wayland deqp_gles2 /virglrenderer/results2
-PAGER= perf_4.16 report -n -g folded -i ./perf.data -v --stdio | head 1000
+PAGER= perf_4.16 report -n -g folded -i ./perf.data -v --stdio | head -1000
 #killall iostat
 
 
