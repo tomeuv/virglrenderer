@@ -5,7 +5,7 @@ export LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib
 
 # TODO This should be started as a systemd service
 echo "Starting weston in the guest"
-nohup /usr/bin/openvt -c 7 -w -v -s -- weston --backend=drm-backend.so --log weston.log &
+nohup /usr/bin/openvt -c 7 -w -v -s -- weston --no-input --backend=drm-backend.so --log weston.log &
 sleep 1
 
 export WAYLAND_DISPLAY=wayland-0

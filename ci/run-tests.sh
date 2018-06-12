@@ -1,7 +1,7 @@
 set -x
 
 echo "Starting weston in the host"
-nohup /usr/bin/openvt -c 7 -w -v -s -- weston --backend=drm-backend.so --log weston.log &
+nohup /usr/bin/openvt -c 7 -w -v -s -- weston --no-input --backend=drm-backend.so --log weston.log &
 sleep 3
 cat weston.log
 
