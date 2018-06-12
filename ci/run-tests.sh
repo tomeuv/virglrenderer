@@ -1,7 +1,7 @@
 set -x
 
 echo "Starting weston in the host"
-nohup weston --backend=headless-backend.so &
+nohup weston --backend=drm-backend.so --log weston.log &
 sleep 1
 
 #DEBIAN_FRONTEND=noninteractive apt-get -y install sysstat  linux-base   linux-perf-4.16 
