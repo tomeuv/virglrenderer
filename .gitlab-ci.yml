@@ -3,10 +3,6 @@ image: docker:latest
 variables:
   DOCKER_DRIVER: overlay2
 
-cache:
-  paths:
-    - ci/ccache/
-
 stages:
   - build_and_test
 
@@ -15,20 +11,11 @@ build_and_test:
   services:
     - docker:dind
   script:
-    - ls -l ci/ccache/
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker pull $CI_REGISTRY_IMAGE:latest || true  # Just for the cache
     - docker history $CI_REGISTRY_IMAGE:latest
 
-    - mkdir -p ci/ccache
-    - touch ci/ccache/dummy # Just to keep Docker happy
     - docker build --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE --cache-from $CI_REGISTRY_IMAGE:latest ci
-
-    # Copy ccache out
-    - CON=$(docker run -d $CI_REGISTRY_IMAGE:latest /bin/bash) &&
-      docker cp ${CON}:/ccache ci/.
-    - ls -l ci
-    - ls -l ci/ccache || true
 
     - docker images
     - docker history $CI_REGISTRY_IMAGE:latest

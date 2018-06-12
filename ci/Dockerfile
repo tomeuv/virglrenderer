@@ -1,12 +1,5 @@
 FROM debian:unstable-slim
 
-RUN mkdir -p /ccache
-COPY ccache/* /ccache/
-ENV CCACHE_BASEDIR=/
-ENV CCACHE_DIR=/ccache
-ENV PATH="/usr/lib/ccache:$PATH"
-ENV CCACHE_DISABLE=1
-
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GOPATH=/usr/local/go
 ENV PATH=$PATH:/usr/local/go/bin
@@ -36,7 +29,6 @@ RUN apt-get update && \
       golang-go \
       cmake \
       spirv-headers \
-      ccache \
       weston \
       check \
       linux-image-amd64 \
@@ -131,20 +123,13 @@ RUN git clone git://anongit.freedesktop.org/mesa/mesa . && \
     rm -rf /mesa
 WORKDIR /
 
-# Enable ccache only now to avoid growing the layers too much
-ENV CCACHE_DISABLE=0
-
 ARG CI_COMMIT_SHA=HEAD
 WORKDIR /virglrenderer
 RUN git clone https://gitlab.freedesktop.org/tomeu/virglrenderer.git . && \
-    ccache -s && \
-    ls -l /ccache && \
     git checkout ${CI_COMMIT_SHA} && \
     git log --oneline -n 1 && \
     ./autogen.sh --prefix=/usr/local && \
     make -j$(nproc) install && \
-    ccache -s && \
-    ls -l /ccache && \
     rm -rf /virglrenderer
 WORKDIR /
 
