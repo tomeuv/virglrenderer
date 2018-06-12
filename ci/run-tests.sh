@@ -1,6 +1,6 @@
 set -x
 
-mkdir -p /etc/xdg/weston && printf "[core]\nrequire-input = false" > /etc/xdg/weston/weston.ini
+mkdir -p /etc/xdg/weston && printf "[core]\nrequire-input=false" > /etc/xdg/weston/weston.ini
 
 echo "Starting weston in the host"
 nohup /usr/bin/openvt -c 7 -w -v -s -- weston --no-input --backend=drm-backend.so --log weston.log &
