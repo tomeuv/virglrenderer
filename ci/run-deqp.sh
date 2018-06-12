@@ -14,11 +14,15 @@ export PIGLIT_DEQP_GLES3_BIN=/usr/local/VK-GL-CTS/modules/gles3/deqp-gles3
 cd /usr/local/piglit
 mkdir -p /virglrenderer/results
 
-#iostat -mxzs 5 &
 
-time ./piglit run -t color_clear -p wayland deqp_gles2 /virglrenderer/results
+time ./piglit run -t color_c -p wayland deqp_gles2 /virglrenderer/results
 
-strace -fc ./piglit run -t color_clear -p wayland deqp_gles2 /virglrenderer/results
+iostat -mxzs 5 &
+time ./piglit run -t color_c -p wayland deqp_gles2 /virglrenderer/results
+killall iostat
+
+strace -fc ./piglit run -t color_c -p wayland deqp_gles2 /virglrenderer/results
 
 ./piglit summary console /virglrenderer/results
 
+sleep 3
