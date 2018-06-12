@@ -15,9 +15,9 @@ cd /usr/local/piglit
 mkdir -p /virglrenderer/results
 
 
-iostat -mxzs 5 &
-time ./piglit run -j12 -c -t color_c -p wayland deqp_gles2 /virglrenderer/results
-killall iostat
+#iostat -mxzs 5 &
+time strace -c ./piglit run -j12 -c -t color_c -p wayland deqp_gles2 /virglrenderer/results
+#killall iostat
 
 
 ./piglit summary console /virglrenderer/results
