@@ -7,6 +7,7 @@ nohup /usr/bin/openvt -c 7 -w -v -s -- weston --no-input --backend=drm-backend.s
 sleep 3
 cat weston.log
 ps ax | grep weston
+cat /etc/xdg/weston/weston.ini
 
 #DEBIAN_FRONTEND=noninteractive apt-get -y install sysstat  linux-base   linux-perf-4.16 
 
