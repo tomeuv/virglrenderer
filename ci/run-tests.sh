@@ -11,10 +11,10 @@ cd /usr/local/piglit
 mkdir -p /virglrenderer/results2
 
 #iostat -mxzs 5 &
-time strace -c ./piglit run -j 12 -c -t color_c -p wayland deqp_gles2 /virglrenderer/results2
+time strace -cf ./piglit run -j 12 -c -t color_c -p wayland deqp_gles2 /virglrenderer/results2
 #killall iostat
 
 
 echo "Starting guest"
-fakemachine -v /virglrenderer:/virglrenderer sh /virglrenderer/ci/run-deqp.sh
+strace -cf fakemachine -v /virglrenderer:/virglrenderer sh /virglrenderer/ci/run-deqp.sh
 

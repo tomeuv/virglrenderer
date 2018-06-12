@@ -16,7 +16,7 @@ mkdir -p /virglrenderer/results
 
 
 #iostat -mxzs 5 &
-time strace -c ./piglit run -j12 -c -t color_c -p wayland deqp_gles2 /virglrenderer/results
+time ./piglit run -j12 -c -t color_c -p wayland deqp_gles2 /virglrenderer/results
 #killall iostat
 
 
