@@ -16,7 +16,7 @@ mkdir -p /virglrenderer/results
 
 #iostat -mxzs 5 &
 
-./piglit run -p wayland deqp_gles2 /virglrenderer/results
+strace -fc ./piglit run -t etc2 -p wayland deqp_gles2 /virglrenderer/results
 
 ./piglit summary console /virglrenderer/results
 
