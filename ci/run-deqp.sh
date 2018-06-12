@@ -1,10 +1,6 @@
 export XDG_RUNTIME_DIR=/tmp
 export LD_LIBRARY_PATH=/usr/local/lib64:/usr/local/lib
 
-time dd if=/usr/bin/qemu-system-x86_64 of=/dev/null
-time dd if=/usr/bin/qemu-system-x86_64 of=/dev/null
-time dd if=/usr/bin/qemu-system-x86_64 of=/dev/null
-
 # TODO This should be started as a systemd service
 echo "Starting weston in the guest"
 nohup /usr/bin/openvt -c 7 -w -v -s -- weston --backend=drm-backend.so --use-pixman --log weston.log &
@@ -18,7 +14,7 @@ export PIGLIT_DEQP_GLES3_BIN=/usr/local/VK-GL-CTS/modules/gles3/deqp-gles3
 cd /usr/local/piglit
 mkdir -p /virglrenderer/results
 
-iostat -mxzs 5 &
+#iostat -mxzs 5 &
 
 ./piglit run -p wayland deqp_gles2 /virglrenderer/results
 
