@@ -51,8 +51,10 @@ RUN apt-get update && \
     apt-get clean
 
 # Drop this once http://hg.libsdl.org/SDL/rev/295cf9910d75 makes it into Debian
+ARG KNOWN_GOOD_SDL=e61ceda026b8
 WORKDIR /SDL
-RUN hg clone http://hg.libsdl.org/SDL . && \
+RUN git clone git@gitlab.freedesktop.org:tomeu/SDL.git . && \
+    git checkout ${KNOWN_GOOD_SDL} && \
     ./autogen.sh && \
     ./configure  --prefix=/usr/local \
                  --disable-rpath \
@@ -103,7 +105,7 @@ WORKDIR /
 
 ARG KNOWN_GOOD_PIGLIT=1a2f49f17fb45
 WORKDIR /piglit
-RUN git clone git://anongit.freedesktop.org/git/piglit . && \
+RUN git clone https://gitlab.freedesktop.org/mesa/piglit.git . && \
     git checkout ${KNOWN_GOOD_PIGLIT} && \
     git log --oneline -n 1 && \
     cmake . && \
@@ -115,7 +117,7 @@ WORKDIR /
 # Wait for Debian to ship libwayland-egl
 ARG KNOWN_GOOD_MESA=67f7a16b5985
 WORKDIR /mesa
-RUN git clone git://anongit.freedesktop.org/mesa/mesa . && \
+RUN git clone https://gitlab.freedesktop.org/mesa/mesa.git . && \
     git checkout ${KNOWN_GOOD_MESA} && \
     git log --oneline -n 1 && \
     ./autogen.sh --prefix=/usr/local --with-platforms="drm x11 wayland" --with-dri-drivers="i965" --with-gallium-drivers="swrast virgl radeonsi" --enable-debug --enable-llvm ac_cv_path_LLVM_CONFIG=llvm-config-6.0 && \
